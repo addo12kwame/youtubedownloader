@@ -1,8 +1,11 @@
 import os
 
+import pytubefix.exceptions
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from pytubefix import *
+from pytubefix.exceptions import VideoUnavailable
+
 from .models import Recent
 
 # Create your views here.
@@ -24,11 +27,13 @@ def main(request):
 
             print(request.session.get('links', []))
 
+        except VideoUnavailable:
+            raise VideoUnavailable
         except Exception:
-            print(Exception)
+            raise Exception
 
-        return render(request, 'main_page.html', context={'links': request.session.get('links',[])[-5:]})
-    return render(request,'main_page.html', context={'links':  request.session.get('links',[])[-5:]})
+        return render(request, 'main_page.html', context={'links': request.session.get('links', [])[-5:]})
+    return render(request, 'main_page.html', context={'links':  request.session.get('links', [])[-5:]})
 
 
 def clear_links(request):
