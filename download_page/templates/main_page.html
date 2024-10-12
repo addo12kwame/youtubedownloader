@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube Downloader</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body class="container-fluid text-center bg-dark p-3 text-white">
+    <!-- Heading Section -->
+    <h1 class="text-info mb-4">YouTube Downloader</h1>
+
+    <!-- Main Content Row -->
+    <div class="row bg-secondary p-4 rounded shadow-sm">
+        <!-- Column 1: Input Form -->
+        <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+            <p class="text-white-50">Paste your link below and click download</p>
+            <form>
+
+                <!-- Input Field -->
+                <div class="mb-3">
+                    <input type="text" name="link" class="form-control bg-dark text-white" placeholder="YouTube link here" required>
+                </div>
+                <!-- Button Moved Down -->
+                <div>
+                    <button type="submit" class="btn btn-info mt-3">Download</button>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="col-12 col-lg-6">
+            <h2 class="text-light">Recent Links</h2>
+            <ul class="list-group">
+                {% for link in links %}
+                    <li class="list-group-item bg-dark text-white p-3 border-light"> {{ link }} </li>
+                {% empty %}
+                    <li class="list-group-item bg-dark text-white p-3 border-light">No recent links</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
