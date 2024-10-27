@@ -17,9 +17,9 @@ cd youtubedownloader
 1. # Create and activate a virtual environment:
 
         python -m venv venv
- # Activate the virtual environment on Mac/Linux
+   # Activate the virtual environment on Mac/Linux
         source venv/bin/activate   
-    # On Windows, use 
+   # On Windows, use 
         venv\Scripts\activate
 
 2. #  Install the required dependencies:
@@ -32,7 +32,7 @@ cd youtubedownloader
 
 Open your browser and go to http://127.0.0.1:8000/ to use the application.
 
-# Usage
+   # Usage
 
 Paste a YouTube video link into the input field.
 Click the Download button.
@@ -40,7 +40,7 @@ The video will be downloaded and saved to your device.
 View recent downloads or clear the list.
 
 
-Contributing
+# Contributing
 
 Contributions are welcome! If you have suggestions, bug reports, or would like to help out, follow the steps below:
 
