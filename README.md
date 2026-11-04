@@ -58,3 +58,11 @@ python manage.py test
 ```
 
 Tests cover URL validation, CSRF, format filtering, session isolation, invalid requests, mocked worker completion, and browser attachment responses. Fonts come from Google Fonts; system fallbacks work offline. Live video thumbnails are loaded from YouTube's image CDN only after a successful preview.
+
+## Full downloader deployment on Render
+
+`render.yaml` defines a free Python web service, with a generated stable Django secret, HTTPS-only cookies, collected static assets, and one Gunicorn process with four request threads. The single process is required because the bounded download worker pool and job registry are process-local. Do not increase Gunicorn workers without first moving jobs into a shared queue. No browser design-preview shortcut replaces actual downloads.
+
+Free Render services can sleep after inactivity. Temporary download files, sessions, and jobs are lost on restart or redeployment; failed jobs must be started again. This is a short-lived portfolio demo, not a durable download service. Upstream YouTube restrictions can prevent extraction from cloud IPs. Automated tests mock extraction and do not establish real-video availability. Only download videos you have permission to save.
+
+To deploy, connect the Render integration, authorize access to this repository, and create the service from the blueprint. The blueprint requests the free plan only. Paid workers or persistent disks are not provisioned. Durable production processing would need shared job state, queue retries, private object storage, and abuse/resource controls.

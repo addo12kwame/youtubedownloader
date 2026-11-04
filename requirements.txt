@@ -2,3 +2,5 @@ asgiref==3.13.0
 Django==5.2.18
 sqlparse==0.6.1
 yt-dlp==2026.10.26
+gunicorn==26.2.0
+whitenoise==6.12.0

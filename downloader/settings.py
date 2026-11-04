@@ -25,9 +25,14 @@ from django.core.management.utils import get_random_secret_key
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+HOSTED = bool(os.environ.get('RENDER'))
+DEBUG = os.environ.get('DJANGO_DEBUG', '0' if HOSTED else '1') == '1'
+if HOSTED and not os.environ.get('DJANGO_SECRET_KEY'):
+    raise RuntimeError('DJANGO_SECRET_KEY is required for hosting')
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
+if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
 
 # Application definition
@@ -44,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,3 +135,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 (BASE_DIR / 'data').mkdir(exist_ok=True)
 DOWNLOAD_ROOT = BASE_DIR / 'data' / 'downloads'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_AGE = 3600
+DATA_UPLOAD_MAX_MEMORY_SIZE = 16384
+if HOSTED:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    CSRF_TRUSTED_ORIGINS = ['https://' + os.environ['RENDER_EXTERNAL_HOSTNAME']] if os.environ.get('RENDER_EXTERNAL_HOSTNAME') else []
