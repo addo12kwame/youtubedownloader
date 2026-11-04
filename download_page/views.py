@@ -79,7 +79,9 @@ def preview(request):
         return JsonResponse(result)
     except (ValueError, TypeError, KeyError):
         return JsonResponse({'error': 'Check the link and try an individual, available YouTube video.'}, status=400)
-    except Exception:
+    except Exception as exc:
+        if 'not a bot' in str(exc).lower() or 'sign in to confirm' in str(exc).lower():
+            return JsonResponse({'error': 'YouTube blocked automated access from this hosting server. This video cannot be prepared here. You can run the project locally; the interface preview does not perform a download.'}, status=422)
         return JsonResponse({'error': 'Video details could not be loaded. The video may be restricted, unavailable, or YouTube may require additional extractor support.'}, status=422)
 
 

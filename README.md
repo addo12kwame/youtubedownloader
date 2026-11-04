@@ -1,5 +1,6 @@
 # FrameDrop — YouTube Downloader
 
+[Hosted application](https://framedrop-0t1s.onrender.com) · Free Render service · Read the live-check limitation below
 A rejuvenated Django downloader with a focused interface, video previews, available quality selection, background preparation, real progress, and browser file delivery.
 
 ![FrameDrop interface](preview.png)
@@ -66,3 +67,11 @@ Tests cover URL validation, CSRF, format filtering, session isolation, invalid r
 Free Render services can sleep after inactivity. Temporary download files, sessions, and jobs are lost on restart or redeployment; failed jobs must be started again. This is a short-lived portfolio demo, not a durable download service. Upstream YouTube restrictions can prevent extraction from cloud IPs. Automated tests mock extraction and do not establish real-video availability. Only download videos you have permission to save.
 
 To deploy, connect the Render integration, authorize access to this repository, and create the service from the blueprint. The blueprint requests the free plan only. Paid workers or persistent disks are not provisioned. Durable production processing would need shared job state, queue retries, private object storage, and abuse/resource controls.
+
+### Live verification on November 4, 2026
+
+The Render service started successfully with Python 3.13.8, database migrations, static assets, secure session cookies, and a single Gunicorn process. Its HTML and interface load publicly. A real lookup for the Blender Foundation’s Big Buck Bunny video was rejected by YouTube with “Sign in to confirm you’re not a bot.” The application reports that restriction honestly; a real hosted file download has not been verified. A healthy Render deployment does not establish that YouTube will allow video extraction from its network.
+
+The full downloader implementation is deployed, including its bounded worker pool and browser file-delivery endpoints. The interface preview remains explicitly simulated. Do not publish claims of verified hosted downloading based on the preview or mocked tests. Local operation may also be affected by upstream restrictions.
+
+Service: `framedrop-0t1s.onrender.com`. Render service ID: `srv-dblgh4jncjis73dq7jh0`. The service uses the Free compute plan. This public-repository deployment was created through the dashboard; use Manual Deploy to release future commits until a Git-provider connection or Blueprint auto-deployment is configured.
