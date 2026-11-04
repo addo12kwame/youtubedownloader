@@ -55,7 +55,7 @@ def formats(info):
 def main(request):
     if not request.session.session_key:
         request.session.create()
-    return render(request, 'main_page.html')
+    return render(request, 'main_page.html', {'hosted': getattr(settings, 'HOSTED', False)})
 
 
 @require_POST

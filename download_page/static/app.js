@@ -63,7 +63,7 @@ function showPreview(video, demo = false) {
   $("progress-wrap").hidden = true;
   $("download-note").textContent = demo
     ? "Design preview only. Paste a real link to prepare a download."
-    : "Your file is prepared locally, then saved through your browser.";
+    : "Your file is prepared on the server, then saved through your browser.";
   announce(demo ? "Design preview loaded." : `Video found: ${video.title}`);
 }
 $("preview-form").addEventListener("submit", async (e) => {
