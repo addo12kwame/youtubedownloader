@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
+from django.core.cache import cache
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
@@ -59,6 +60,11 @@ def main(request):
 
 @require_POST
 def preview(request):
+    if getattr(settings, 'HOSTED', False):
+        count = cache.get('preview-budget', 0)
+        if count >= 50:
+            return JsonResponse({'error': 'The demo preview limit has been reached. Try again in five minutes.'}, status=429)
+        cache.set('preview-budget', count + 1, 300)
     try:
         url = video_url(json.loads(request.body).get('url'))
         with YoutubeDL(options()) as downloader:
@@ -121,6 +127,11 @@ def start(request):
         cleanup()
         if sum(j['status'] == 'working' for j in JOBS.values()) >= 2:
             return JsonResponse({'error': 'Two downloads are already processing. Please try again shortly.'}, status=429)
+        if getattr(settings, 'HOSTED', False):
+            used = sum(p.stat().st_size for p in settings.DOWNLOAD_ROOT.glob('*/video.mp4') if p.is_file())
+            reserved = sum(MAX_BYTES for job in JOBS.values() if job['status'] == 'working')
+            if used + reserved + MAX_BYTES > 512 * 1024 * 1024:
+                return JsonResponse({'error': 'Temporary download storage is at capacity. Try again after older downloads expire.'}, status=429)
         identifier = uuid.uuid4().hex
         JOBS[identifier] = {'owner': request.session.session_key, 'title': saved['title'], 'created': time.time(), 'status': 'working', 'progress': 0}
         POOL.submit(run_job, identifier, saved['url'], choice)
